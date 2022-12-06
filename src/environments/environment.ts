@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  api_cards: 'http://localhost:8090/blackjack/'
+  api_cards: 'http://localhost:8090/blackjack'
 };
 
 /*

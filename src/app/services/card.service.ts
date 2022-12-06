@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/internal/Observable';
 import { environment } from 'src/environments/environment';
 
 const { api_cards } = environment;
@@ -12,9 +13,11 @@ export class CardService {
   constructor(protected http: HttpClient,) { 
   }
 
-  getCards() {
-    return this.http.get(api_cards).subscribe((data) => {
-      console.log(data);
-    });
+  initGame(): Observable<any> {
+    return this.http.get<any>(api_cards);
+  }
+
+  getCard(): Observable<any> {
+    return this.http.get<any>(api_cards + '/hit');
   }
 }

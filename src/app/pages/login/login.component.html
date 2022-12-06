@@ -1,20 +1,27 @@
-<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
-  <div class="card container-fluid">
-    <div class="header-body">
+<div class="bg-gradient-danger">
+  <div class="container-fluid">
+    <div>
       <!-- Card stats -->
-      <div class="row">
-        <div class="col-sm" *ngFor="let card of dealerCards">
+      <div class="cartas">
+        <div class="carta dealer" *ngFor="let card of dealerCards">
           <app-card [card]="card.name"></app-card>
         </div>
-        <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
-          <div class="d-flex justify-content-between">
-            <button (click)='pedir()' class="btn btn-sm btn-info mr-4">Pedir</button>
-            <button (click)='parar()'class="btn btn-sm btn-default float-right">Parar</button>
-          </div>
+      </div>
+      <div class="cartas">
+        <div class="carta dealer" *ngFor="let card of playerCards">
+          <app-card [card]="card.name"></app-card>
+        </div>
+      </div>
+      <div class="text-center border-0 pt-3 pt-md-4 pb-0 pb-md-4">
+        <div class="d-flex justify-content-between">
+          <button (click)='pedir()' class="btn btn-sm btn-info mr-4">Pedir</button>
+          <button (click)='parar()'class="btn btn-sm btn-default float-right">Parar</button>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<div *ngIf="error">{{ messageError }}</div>
 
 

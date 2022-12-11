@@ -10,9 +10,11 @@ export class LoginComponent implements OnInit {
 
   dealerCards = [];
   playerCards = [];
+  secretCard = {};
   cards: any;
   playerScore: number;
   dealerScore: number;
+  isJoker: boolean = true;
 
   error = false;
   errorMessage = '';
@@ -23,37 +25,49 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     this.cardService.initGame().subscribe((data) => {
-      this.cards = data;
-      this.dealerCards = this.cards.croupierHand;
-      this.playerCards = this.cards.playerHand;
-      this.calculateHandScore(this.dealerCards);
-      this.calculateHandScore(this.playerCards);
+      this.playerCards = JSON.parse(JSON.stringify(data.playerHand));
+      this.dealerCards = JSON.parse(JSON.stringify(data.croupierHand));
+      this.secretCard = JSON.parse(JSON.stringify(data.croupierHand[1]));
+      this.dealerCards[1].name = 'Joker';
+      this.dealerScore = this.calculateHandEscore(this.dealerCards);
+      this.playerScore = this.calculateHandEscore(this.playerCards);
     });
   }
 
-  calculateHandScore(cards) {
+  calculateHandEscore(cards): number {
     let score = 0;
     cards.forEach((card) => {
       score += card.value;
     });
-    this.playerScore = score;
+    return score;
   }
 
-  // getDealerCards() {
-  //   this.cardService.getCards().playerCards.forEach((card) => {
-  //     this.dealerCards.push(card);
-  //   });
-  // }
-
-  pedirDealer() {
-    this.cardService.getCard().subscribe((data) => {
-      this.dealerCards.push(data.card);
-      this.dealerScore += data.card.value;
-    });
+  llamarApiHastaEncontrarValorMenorA17(caller) {
+    this.cardService.getCard(caller).subscribe({
+      next: (response) => {
+        if (response.handValue <= 17) {
+          this.dealerCards.push(response.card);
+          console.log('dealerCards', this.dealerCards);
+          this.llamarApiHastaEncontrarValorMenorA17(caller);
+        }
+      }, 
+      error: () =>{
+        console.log('ocurrió un error al hacer la petición')
+      }
+    })
   }
 
-  pararDealer() {
-    this.dealerCards = [];
+  parar() {
+    this.cambiarJokerToCard();
+    this.llamarApiHastaEncontrarValorMenorA17("croupier");
+  }
+
+  cambiarJokerToCard() {
+    if (this.isJoker) {
+      this.dealerCards.pop();
+      this.dealerCards.push(this.secretCard);
+      this.isJoker = false;
+    }
   }
 
   pedir() {
@@ -65,15 +79,10 @@ export class LoginComponent implements OnInit {
       this.sendError('No puedes pedir más cartas');
       return { error: this.errorMessage };
     }
-    this.cardService.getCard().subscribe((data) => {
+    this.cardService.getCard("player").subscribe((data) => {
       this.playerCards.push(data.card);
       this.playerScore += data.card.value;
     });
-  }
-
-  parar() {
-    this.playerScore = 0;
-    this.playerCards = [];
   }
 
   sendError(errorMessage): string {
@@ -81,7 +90,7 @@ export class LoginComponent implements OnInit {
     this.errorMessage = errorMessage;
     return errorMessage
   }
-  
+
   resetError(): string {
     this.error = false;
     this.errorMessage = '';

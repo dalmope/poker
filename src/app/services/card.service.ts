@@ -10,14 +10,14 @@ const { api_cards } = environment;
 })
 export class CardService {
 
-  constructor(protected http: HttpClient,) { 
+  constructor(private http: HttpClient,) { 
   }
 
   initGame(): Observable<any> {
     return this.http.get<any>(api_cards);
   }
 
-  getCard(): Observable<any> {
-    return this.http.get<any>(api_cards + '/hit');
+  getCard(caller): Observable<any> {
+    return this.http.post<any>(api_cards + '/hit', {caller: caller});
   }
 }

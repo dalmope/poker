@@ -28,7 +28,7 @@ export class LoginComponent implements OnInit {
       this.playerCards = JSON.parse(JSON.stringify(data.playerHand));
       this.dealerCards = JSON.parse(JSON.stringify(data.croupierHand));
       this.secretCard = JSON.parse(JSON.stringify(data.croupierHand[1]));
-      this.dealerCards[1].name = 'Joker';
+      this.dealerCards[1].name = 'Tapa';
       this.dealerScore = this.calculateHandEscore(this.dealerCards);
       this.playerScore = this.calculateHandEscore(this.playerCards);
     });
